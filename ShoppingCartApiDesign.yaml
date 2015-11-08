@@ -1,0 +1,287 @@
+swagger: '2.0'
+info:
+  title: Shopping Cart API
+  description: SaleStock - Technical Assessment - Backend
+  version: 0.0.1
+  contact:
+    name: David Periang Hendra
+    email: davidphendra@hotmail.com
+host: api.uber.com
+schemes:
+  - https
+basePath: /v1
+produces:
+  - application/json
+paths:
+  /shoppingcarts:
+    post:
+      summary: Create a new Shopping Cart
+      description: |
+        Create a new shoppingcart for specific customer. 
+      parameters:
+        - name: customer_id
+          in: query
+          description: Unique identifier representing Customer.
+          required: true
+          type: string
+          format: string
+        - name: session_id
+          in: query
+          description: Unique identifier representing session to application.
+          required: true
+          type: string
+          format: string
+      tags:
+        - ShoppingCart
+      responses:
+        '201':
+          description: new shoppingcart
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/ShoppingCart'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /shoppingcarts/{shoppingcart_id}:
+    delete:
+      summary: Delete specific Shopping Cart
+      description: |
+        Delete shoppingcart for a specified customer.
+      parameters:
+        - name: shoppingcart_id
+          in: path 
+          description: Unique identifier for ShoppingCart
+          required: true
+          type: string
+          format: string
+      tags:
+        - ShoppingCart
+      responses:
+        204:
+          description: shoppingcart deleted
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /shoppingcarts/{shoppingcart_id}/products:
+    get:
+      summary: Shopping Cart Product  
+      description: |
+        Return list of shopping cart products that customer bought within a specified shoppingcart. 
+      parameters:
+        - name: shoppingcart_id
+          in: path 
+          description: Unique identifier for ShoppingCart
+          required: true
+          type: string
+          format: string
+      tags:
+        - ShoppingCartProduct
+      responses:
+        '200':
+          description: An array of ShoppingCartProduct
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ShoppingCartProduct'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Add a new product to shoppingcart.
+      description: |
+        Add a new product that customer planned to bought to shoppingcart.
+      parameters:
+        - name: shoppingcart_id
+          in: path 
+          description: Unique identifier for ShoppingCart
+          required: true
+          type: string
+          format: string
+        - name: product_id
+          in: query
+          description: Product Id.
+          required: true
+          type: string
+          format: string
+        - name: quantity 
+          in: query
+          description: Number of quantity.
+          required: true
+          type: number
+          format: number
+        - name: size 
+          in: query
+          description: Product size.
+          required: true
+          type: number
+          format: number
+        - name: colour 
+          in: query
+          description: Product colour.
+          required: true
+          type: string
+          format: string 
+      tags:
+        - ShoppingCartProduct
+      responses:
+        '201':
+          description: new shoppingcardproduct
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/ShoppingCartProduct'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /shoppingcarts/{shoppingcart_id}/products/{product_id}:
+    get:
+      summary: Get a specified Product whithin Shopping Cart
+      description: |
+        Get a specified Product whithin Shopping Carts.
+      parameters:
+        - name: shoppingcart_id
+          in: path 
+          description: Unique identifier for ShoppingCart
+          required: true
+          type: string
+          format: string
+        - name: product_id
+          in: path 
+          description: Unique identifier for Product
+          required: true
+          type: string
+          format: string
+      tags:
+        - ShoppingCartProduct
+      responses:
+        '200':
+          description: Shopping card product
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/ShoppingCartProduct'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    put:
+      summary: Update a Product information within Shopping Cart
+      description: |
+        Update a Product information within Shopping Cart.
+      parameters:
+        - name: shoppingcart_id
+          in: path 
+          description: Unique identifier for ShoppingCart
+          required: true
+          type: string
+          format: string
+        - name: product_id
+          in: path 
+          description: Unique identifier for Product
+          required: true
+          type: string
+          format: string
+        - name: quantity 
+          in: query
+          description: Number of quantity.
+          required: false
+          type: number
+          format: number
+        - name: size 
+          in: query
+          description: Product size.
+          required: false
+          type: number
+          format: number
+        - name: colour 
+          in: query
+          description: Product colour.
+          required: false
+          type: string
+          format: string 
+      tags:
+        - ShoppingCartProduct
+      responses:
+        '200':
+          description: Updated Shopping Cart Product
+          schema:
+            type: object
+            items:
+              $ref: '#/definitions/ShoppingCartProduct'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    delete:
+      summary: Delete a Product within Shopping Cart 
+      description: Perform removing a product from Shopping Cart.
+      parameters:
+        - name: shoppingcart_id
+          in: path 
+          description: Unique identifier for ShoppingCart
+          required: true
+          type: string
+          format: string
+        - name: product_id
+          in: path 
+          description: Unique identifier for Product
+          required: true
+          type: string
+          format: string
+      tags: 
+        - ShoppingCartProduct
+      responses:
+        204:
+          description: shoppingcartproduct deleted
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  ShoppingCart:
+    type: object 
+    properties:
+      customer_id:
+        type: string
+        description: Unique identifier representing a specific customer
+      session_id:
+        type: string 
+        description: Unique identifier representing a specific user session to application. This is to handle multiple connection.
+      create_date:
+        type: string
+        format: date
+        description: Shopping cart creation date
+  ShoppingCartProduct:
+    type: object 
+    properties:
+      product_id:
+        type: string
+        description: Unique identifier representing a product.
+      shoppingcart_id:
+        type: string 
+        description: Unique identifier representing a shopping cart. 
+      quantity: 
+        type: integer 
+        format: int32 
+        description: Number of product customer planned to order.
+      size:
+        type: string
+        description: Product size.
+      color:
+        type: string 
+        description: Product color.
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
